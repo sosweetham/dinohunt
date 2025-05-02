@@ -131,7 +131,7 @@ onMount(() => {
             class="h-[75vh] w-screen -scale-x-100 bg-[url('/images/jungle-pexels-davidriano-975771.jpg')] bg-cover bg-no-repeat">
             <div
                 in:fade={{ delay: 700 }}
-                class=" h-[75vh] w-full translate-x-36 translate-y-10 -scale-x-100 bg-[url('/images/dinosaur-purepng.png')] bg-contain bg-right-bottom bg-no-repeat">
+                class="h-[75vh] w-full -scale-x-100 bg-[url('/images/dinosaur-purepng.png')] bg-contain bg-right-bottom bg-no-repeat md:translate-x-36 md:translate-y-10">
             </div>
         </div>
         <div
@@ -148,7 +148,7 @@ onMount(() => {
                 </div>
             </div>
             <div
-                class="text-stroke font-rubik-dirt text-center text-3xl font-normal mix-blend-multiply dark:text-neutral-950 dark:mix-blend-plus-lighter md:text-6xl lg:text-8xl">
+                class="text-stroke text-center font-rubik-dirt text-3xl font-normal mix-blend-multiply dark:text-neutral-950 dark:mix-blend-plus-lighter md:text-6xl lg:text-8xl">
                 dinohunt
                 <span class="block text-xl md:inline md:text-2xl lg:text-3xl">
                     (coming soon)

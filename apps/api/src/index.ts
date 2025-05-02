@@ -13,8 +13,8 @@ process.on("exit", handleExit);
 
 cleanup();
 const app = new Elysia()
-    .get("/", ({redirect}) => {
-        return redirect(dinoHuntConfig.clientConfig.clientHost)
+    .get("/", ({ redirect }) => {
+        return redirect(dinoHuntConfig.clientConfig.clientHost);
     })
     .use(cors())
     .use(swagger())

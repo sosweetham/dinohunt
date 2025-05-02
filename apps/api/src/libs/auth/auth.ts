@@ -116,6 +116,6 @@ export const auth = betterAuth({
         discord: {
             clientId: dinoHuntConfig.discordConfig.clientId,
             clientSecret: dinoHuntConfig.discordConfig.clientSecret,
-        }
-    }
+        },
+    },
 });
