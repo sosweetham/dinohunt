@@ -1,0 +1,73 @@
+services:
+    dinohunt-database:
+        container_name: dinohunt-database
+        hostname: dinohunt-database
+        image: surrealdb/surrealdb:v2.2.1
+        restart: unless-stopped
+        volumes:
+            - ./db/data:/db
+        env_file:
+            - .env
+        # command: surreal start --allow-guests --auth --log $DB_LOG_LEVEL --user $DB_USER --pass $DB_PASSWORD file:/db
+        command: start --user $DB_USER --pass $DB_PASSWORD rocksdb://db --allow-net
+        ports:
+            - $DB_PORT:8000
+    dinohunt-seaweedfs:
+        container_name: dinohunt-seaweedfs
+        hostname: dinohunt-seaweedfs
+        image: chrislusf/seaweedfs:3.85
+        depends_on:
+            - dinohunt-database
+        restart: unless-stopped
+        volumes:
+            - ./seaweedfs/data:/data
+            - ./seaweedfs/s3_config.json:/etc/seaweedfs/s3_config.json
+        ports:
+            - "8333:8333"
+            - "9333:9333"
+            - "8080:8080"
+            - "8888:8888"
+        command: server -s3 -s3.config=/etc/seaweedfs/s3_config.json
+    dinohunt-kvs:
+        container_name: dinohunt-kvs
+        hostname: dinohunt-kvs
+        image: valkey/valkey:8.0.2-alpine
+        depends_on:
+            - dinohunt-database
+        restart: unless-stopped
+        ports:
+            - "6379:6379"
+        volumes:
+            - ./kvs/data:/data
+        command: ["valkey-server", "--save", "60", "1", "--loglevel", "notice"]
+    dinohunt-api:
+        container_name: dinohunt-api
+        hostname: dinohunt-api
+        build:
+            context: .
+            dockerfile: docker/dev/api.dockerfile
+            target: dev-api
+        restart: unless-stopped
+        env_file:
+            - .env
+        environment:
+            - PLATFORM=container
+            - PORT=${API_PORT:-3000}
+        ports:
+            - ${API_PORT:-3000}:${API_PORT:-3000}
+        depends_on:
+            - dinohunt-database
+            - dinohunt-seaweedfs
+            - dinohunt-kvs
+        develop:
+            watch:
+                - action: sync
+                  path: ./apps/api
+                  target: /app/apps/api
+                  ignore:
+                      - node_modules
+                - action: rebuild
+                  path: ./bun.lock
+                - action: sync+restart
+                  path: ./.env
+                  target: /app/.env
