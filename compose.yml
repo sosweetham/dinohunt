@@ -36,7 +36,7 @@ services:
             - dinohunt-database
         restart: unless-stopped
         ports:
-            - "6379:6379"
+            - $VALKEY_PORT:6379
         volumes:
             - ./kvs/data:/data
         command: ["valkey-server", "--save", "60", "1", "--loglevel", "notice"]
